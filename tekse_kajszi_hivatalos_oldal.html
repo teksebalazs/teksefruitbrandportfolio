@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="hu" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tekse Kajszi | Kézműves Prémium Termékek</title>
+    
+    <!-- Google Fonts betöltése -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS betöltése -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'tekse-bg': '#FAF6F0',
+                        'tekse-dark': '#2C1E16',
+                        'tekse-orange': '#D97736',
+                        'tekse-gold': '#C5A059',
+                        'tekse-light': '#FDFBF8'
+                    },
+                    fontFamily: {
+                        'serif': ['"Cormorant Garamond"', 'serif'],
+                        'sans': ['"Montserrat"', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
+                        'glass-hover': '0 12px 40px 0 rgba(217, 119, 54, 0.15)',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            background-color: #FAF6F0;
+            color: #2C1E16;
+            overflow-x: hidden;
+        }
+        
+        /* Canvas fixálása a legalsó rétegen */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1; /* Mindig a tartalom mögött */
+        }
+
+        /* Glassmorphism effektek */
+        .glass-nav {
+            background: rgba(253, 251, 248, 0.7);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            transition: all 0.4s ease;
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        /* Finom fade-in animációk */
+        .fade-in-up {
+            animation: fadeInUp 1s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .delay-100 { animation-delay: 100ms; }
+        .delay-200 { animation-delay: 200ms; }
+        .delay-300 { animation-delay: 300ms; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-tekse-orange selection:text-white font-sans">
+
+    <!-- Interaktív részecske háttér -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Navigáció -->
+    <nav class="fixed w-full z-50 glass-nav transition-all duration-300" id="navbar">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="font-serif text-2xl md:text-3xl font-bold text-tekse-dark tracking-wide">
+                Tekse <span class="text-tekse-orange italic font-normal">Kajszi</span>
+            </a>
+            
+            <div class="hidden md:flex space-x-8 text-sm font-medium tracking-widest uppercase text-tekse-dark">
+                <a href="#tortenetunk" class="hover:text-tekse-orange transition-colors">Történetünk</a>
+                <a href="#termekek" class="hover:text-tekse-orange transition-colors">Kínálatunk</a>
+                <a href="#kapcsolat" class="hover:text-tekse-orange transition-colors">Kapcsolat</a>
+            </div>
+
+            <!-- Mobil menü gomb (csak vizuális) -->
+            <button class="md:hidden text-tekse-dark focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Szekció -->
+    <header class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+        <div class="container mx-auto px-6 flex flex-col-reverse md:flex-row items-center gap-12">
+            
+            <!-- Bal oldal: Szöveg -->
+            <div class="w-full md:w-1/2 text-center md:text-left z-10 fade-in-up">
+                <p class="font-sans text-sm tracking-[0.4em] uppercase text-tekse-gold font-medium mb-4">A tiszta gyümölcsélmény</p>
+                <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl text-tekse-dark leading-tight mb-6">
+                    A nyár legjavát <br/><span class="italic text-tekse-orange">üvegbe zártuk.</span>
+                </h1>
+                <p class="font-sans text-gray-600 text-lg md:text-xl leading-relaxed mb-10 max-w-lg mx-auto md:mx-0">
+                    Hagyomány és szeretet, új köntösben. Válogatott, prémium kajszibarackból készült kézműves párlatok és lekvárok, kompromisszumok nélkül.
+                </p>
+                <div class="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4">
+                    <a href="#termekek" class="bg-tekse-dark text-white px-8 py-4 rounded-full font-medium tracking-wide hover:bg-tekse-orange transition-colors duration-300 shadow-lg w-full sm:w-auto text-center">
+                        Kínálatunk Felfedezése
+                    </a>
+                    <a href="#tortenetunk" class="text-tekse-dark font-medium px-8 py-4 uppercase tracking-widest text-sm hover:text-tekse-orange transition-colors">
+                        Ismerj meg minket
+                    </a>
+                </div>
+            </div>
+
+            <!-- Jobb oldal: Fő Termék Kép -->
+            <div class="w-full md:w-1/2 z-10 relative fade-in-up delay-200">
+                <div class="relative w-full h-[500px] flex items-center justify-center">
+                    <!-- Egy finom háttérfény a kép mögött -->
+                    <div class="absolute inset-0 bg-gradient-to-tr from-tekse-orange/20 to-tekse-gold/10 rounded-full blur-3xl scale-90"></div>
+                    <img src="http://googleusercontent.com/image_generation_content/161" alt="Tekse Kajszi Prémium Pálinka" class="relative z-10 h-full object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-700">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Történetünk Szekció -->
+    <section id="tortenetunk" class="py-24 bg-white/40">
+        <div class="container mx-auto px-6 max-w-4xl text-center">
+            <h2 class="font-serif text-4xl md:text-5xl text-tekse-dark mb-8">Hagyomány és szeretet <br><span class="italic text-tekse-gold">minden üvegben</span></h2>
+            <div class="w-16 h-1 bg-tekse-orange mx-auto rounded-full mb-10"></div>
+            
+            <p class="font-sans text-lg text-gray-700 leading-relaxed mb-12">
+                A napérlelte, kézzel válogatott kajszibarackból, hagyományos családi recept alapján készült termékeink elhozzák asztalára a hamisítatlan, természetes gyümölcsízt. Kíméletes eljárással, mesterséges adalékok nélkül dolgozunk, hogy minden kanálban és kortyban a gyümölcs valódi, telt aromája domináljon. Ezt a lekvárt és pálinkát pontosan úgy készítettük, ahogy nagyszüleinktől tanultuk: türelemmel és odafigyeléssel.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 border-t border-tekse-gold/20 pt-16">
+                <div>
+                    <h4 class="font-serif text-2xl text-tekse-orange mb-3 italic">100% Természet</h4>
+                    <p class="text-sm text-gray-600">Kizárólag hibátlan, érett gyümölcsből, színezékek és tartósítószerek nélkül.</p>
+                </div>
+                <div>
+                    <h4 class="font-serif text-2xl text-tekse-orange mb-3 italic">Családi Recept</h4>
+                    <p class="text-sm text-gray-600">Generációkról generációkra szálló titkok és eljárások a tökéletes ízharmóniáért.</p>
+                </div>
+                <div>
+                    <h4 class="font-serif text-2xl text-tekse-orange mb-3 italic">Kézműves Minőség</h4>
+                    <p class="text-sm text-gray-600">Minden üveget szívvel-lélekkel, kézzel készítünk és csomagolunk.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Termékek Szekció -->
+    <section id="termekek" class="py-24 relative z-10">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16 fade-in-up">
+                <span class="text-tekse-gold uppercase tracking-widest text-sm font-semibold">Büszkeségeink</span>
+                <h2 class="font-serif text-5xl text-tekse-dark mt-4 mb-4">Prémium Kínálatunk</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                
+                <!-- 1. Termék: Pálinka -->
+                <div class="glass-card shadow-glass hover:shadow-glass-hover rounded-[2rem] overflow-hidden flex flex-col p-2 fade-in-up delay-100 cursor-pointer group">
+                    <div class="h-72 w-full relative bg-white/50 rounded-[1.5rem] overflow-hidden flex items-center justify-center p-6">
+                        <img src="http://googleusercontent.com/image_generation_content/161" alt="Tekse Kajszi Pálinka" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-700 ease-in-out">
+                    </div>
+                    <div class="p-8 text-center flex-grow flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-serif text-3xl text-tekse-dark mb-2">Kézműves Pálinka</h3>
+                            <p class="font-sans text-sm text-gray-500 mb-6 line-clamp-3">
+                                Elegáns, prémium palackozású 100% tiszta kajszibarack párlat. A gyümölcs legjavából, mesteri lepárlással.
+                            </p>
+                        </div>
+                        <button class="text-tekse-orange uppercase tracking-widest text-sm font-semibold hover:text-tekse-dark transition-colors mt-auto">Részletek &rarr;</button>
+                    </div>
+                </div>
+
+                <!-- 2. Termék: Lekvár (Magyar matrica) -->
+                <div class="glass-card shadow-glass hover:shadow-glass-hover rounded-[2rem] overflow-hidden flex flex-col p-2 fade-in-up delay-200 cursor-pointer group">
+                    <div class="h-72 w-full relative bg-white/50 rounded-[1.5rem] overflow-hidden flex items-center justify-center p-6">
+                        <img src="http://googleusercontent.com/image_generation_content/7" alt="Tekse Kajszi Lekvár" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-700 ease-in-out">
+                    </div>
+                    <div class="p-8 text-center flex-grow flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-serif text-3xl text-tekse-dark mb-2">Klasszikus Lekvár</h3>
+                            <p class="font-sans text-sm text-gray-500 mb-6 line-clamp-3">
+                                Hagyományos családi recept alapján készült, sűrű és gyümölcsös kézműves lekvár. Semmi trükk, csak a tiszta hazai íz.
+                            </p>
+                        </div>
+                        <button class="text-tekse-orange uppercase tracking-widest text-sm font-semibold hover:text-tekse-dark transition-colors mt-auto">Részletek &rarr;</button>
+                    </div>
+                </div>
+
+                <!-- 3. Termék: Thai Export -->
+                <div class="glass-card shadow-glass hover:shadow-glass-hover rounded-[2rem] overflow-hidden flex flex-col p-2 fade-in-up delay-300 cursor-pointer group lg:translate-y-[-20px]">
+                    <!-- Kiemelt termék design csavar -->
+                    <div class="absolute top-4 right-4 bg-tekse-gold text-white text-xs uppercase tracking-wider px-3 py-1 rounded-full z-20 shadow-md">Export</div>
+                    <div class="h-72 w-full relative bg-white/50 rounded-[1.5rem] overflow-hidden flex items-center justify-center p-6">
+                        <img src="http://googleusercontent.com/image_generation_content/323" alt="Tekse Kajszi Thai Export" class="w-full h-full object-contain group-hover:scale-110 transition-transform duration-700 ease-in-out">
+                    </div>
+                    <div class="p-8 text-center flex-grow flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-serif text-3xl text-tekse-dark mb-2">Thai Export Kollekció</h3>
+                            <p class="font-sans text-sm text-gray-500 mb-6 line-clamp-3">
+                                Külpiacra szánt, prémium lokalizált termékcsalád. A magyar minőség és a thai tipográfia elegáns találkozása.
+                            </p>
+                        </div>
+                        <button class="text-tekse-orange uppercase tracking-widest text-sm font-semibold hover:text-tekse-dark transition-colors mt-auto">Részletek &rarr;</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer / Kapcsolat -->
+    <footer id="kapcsolat" class="bg-tekse-dark text-tekse-light pt-20 pb-10 relative z-10">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16 text-center md:text-left">
+                
+                <div>
+                    <h3 class="font-serif text-3xl mb-6">Tekse Kajszi</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Egyenesen a gyümölcsösből az Ön asztalára. Fedezze fel a kompromisszummentes minőséget, amelyet szívvel-lélekkel készítünk 2026 óta.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="font-sans font-semibold uppercase tracking-widest text-sm mb-6 text-tekse-gold">Kapcsolat</h4>
+                    <ul class="text-gray-400 text-sm space-y-3">
+                        <li>info@teksekajszi.hu</li>
+                        <li>+36 30 123 4567</li>
+                        <li>1122 Budapest, Gyümölcsös utca 1.</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-sans font-semibold uppercase tracking-widest text-sm mb-6 text-tekse-gold">Kövess minket</h4>
+                    <div class="flex justify-center md:justify-start space-x-4">
+                        <!-- Placeholder Közösségi ikonok -->
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-tekse-orange transition-colors">
+                            <span class="font-serif italic">Fb</span>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-tekse-orange transition-colors">
+                            <span class="font-serif italic">In</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-white/10 pt-8 text-center text-xs text-gray-500 uppercase tracking-widest">
+                <p>&copy; 2026 Tekse Kajszi. Minden jog fenntartva.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- Navbar Görgő Effektus ---
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-sm');
+                nav.style.background = 'rgba(253, 251, 248, 0.9)';
+            } else {
+                nav.classList.remove('shadow-sm');
+                nav.style.background = 'rgba(253, 251, 248, 0.7)';
+            }
+        });
+
+        // --- Canvas Háttér Animáció ---
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        let width, height;
+        let particles = [];
+        const particleCount = 60; // Kicsit kevesebb részecske a letisztultabb hatásért
+        
+        let mouse = {
+            x: null,
+            y: null,
+            radius: 120 // Hatósugár
+        };
+
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.x;
+            mouse.y = e.y;
+        });
+
+        window.addEventListener('mouseout', () => {
+            mouse.x = undefined;
+            mouse.y = undefined;
+        });
+
+        function resizeCanvas() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            initParticles();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.size = Math.random() * 2.5 + 0.5;
+                this.baseX = this.x;
+                this.baseY = this.y;
+                this.density = (Math.random() * 20) + 1;
+                this.speedX = (Math.random() - 0.5) * 0.3; // Lassabb mozgás
+                this.speedY = (Math.random() - 0.5) * 0.3;
+                
+                // Prémium színek: arany és visszafogott narancs
+                const colors = ['rgba(197, 160, 89, 0.3)', 'rgba(217, 119, 54, 0.2)'];
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x < 0 || this.x > width) this.speedX *= -1;
+                if (this.y < 0 || this.y > height) this.speedY *= -1;
+
+                if (mouse.x != null && mouse.y != null) {
+                    let dx = mouse.x - this.x;
+                    let dy = mouse.y - this.y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+                    let forceDirectionX = dx / distance;
+                    let forceDirectionY = dy / distance;
+                    let maxDistance = mouse.radius;
+                    let force = (maxDistance - distance) / maxDistance;
+                    let directionX = forceDirectionX * force * this.density;
+                    let directionY = forceDirectionY * force * this.density;
+
+                    if (distance < mouse.radius) {
+                        this.x -= directionX;
+                        this.y -= directionY;
+                    } else {
+                        if (this.x !== this.baseX) {
+                            let dx = this.x - this.baseX;
+                            this.x -= dx / 150; // Lágyabb visszatérés
+                        }
+                        if (this.y !== this.baseY) {
+                            let dy = this.y - this.baseY;
+                            this.y -= dy / 150;
+                        }
+                    }
+                }
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animate() {
+            // Teljes törlés helyett fade effect
+            ctx.clearRect(0, 0, width, height); // Most teljesen töröljük a simább teljesítményért, mivel a body színe adja a hátteret
+
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].draw();
+                particles[i].update();
+                
+                // Finom összekötő vonalak
+                for (let j = i; j < particles.length; j++) {
+                    let dx = particles[i].x - particles[j].x;
+                    let dy = particles[i].y - particles[j].y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < 80) { // Kisebb távolság az elegánsabb hálóért
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(197, 160, 89, ${0.05 - distance/1600})`; 
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                        ctx.closePath();
+                    }
+                }
+            }
+            requestAnimationFrame(animate);
+        }
+
+        // Indítás
+        resizeCanvas();
+        animate();
+    </script>
+</body>
+</html>
